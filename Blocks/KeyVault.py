@@ -12,8 +12,8 @@ class KeyVault(Block):
     azure_client_id: SecretStr
     azure_client_secret: SecretStr
     azure_tenant_id: SecretStr
-    vault_url:str
-    
+    vault_url: str
+
     """Connect to Azure Key Vault and get all the keys or one key.
     """
 
@@ -26,8 +26,6 @@ class KeyVault(Block):
 
     def __init__(self) -> None:
         super().__init__()
-
-        self.vault_url = String.load("vault-url").value
 
         os.environ["AZURE_CLIENT_ID"] = self.azure_client_id
         os.environ["AZURE_CLIENT_SECRET"] = self.azure_client_secret
