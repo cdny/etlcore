@@ -9,10 +9,6 @@ from azure.identity import DefaultAzureCredential
 from pydantic import SecretStr
 
 class KeyVault(Block):
-    azure_client_id: SecretStr
-    azure_client_secret: SecretStr
-    azure_tenant_id: SecretStr
-    vault_url: str
 
     """Connect to Azure Key Vault and get all the keys or one key.
     """
@@ -23,19 +19,19 @@ class KeyVault(Block):
     # _description	Short description of block type. Defaults to docstring, if provided.
     # _code_example
 
+    azure_client_id: SecretStr
+    azure_client_secret: SecretStr
+    azure_tenant_id: SecretStr
+    vault_url: str
 
-    def __init__(self) -> None:
-        super().__init__()
+    def get_secrets(self) -> dict:
 
         os.environ["AZURE_CLIENT_ID"] = self.azure_client_id
         os.environ["AZURE_CLIENT_SECRET"] = self.azure_client_secret
         os.environ["AZURE_TENANT_ID"] = self.azure_tenant_id
         
         credential = DefaultAzureCredential()
-        self.client = SecretClient(vault_url=self.vault_url, credential=credential)
-
-
-    def get_secrets(self) -> dict:
+        self.client = SecretClient(credential=credential)
 
         secrets = self.client.list_properties_of_secrets()
         result = dict()
