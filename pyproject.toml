@@ -1,5 +1,5 @@
 [project]
-name = "etl-core"
+name = "ETLCore"
 authors = [
     {name = "Business Solutions", email = "solutions@caredesignny.org"},
 ]
