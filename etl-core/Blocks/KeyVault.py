@@ -1,7 +1,6 @@
 import os
 
 from prefect.blocks.core import Block
-from prefect.blocks.system import Secret, String
 
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential

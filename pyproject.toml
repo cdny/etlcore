@@ -1,2 +1,20 @@
 [project]
 name = "etl-core"
+authors = [
+    {name = "Business Solutions", email = "solutions@caredesignny.org"},
+]
+description = "Core libraries to run our ETL processes"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["etl", "prefect"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "prefect",
+    "azure.keyvault",
+    "azure.identity",
+    "pydantic",
+    "requests"
+]
+dynamic = ["version"]
