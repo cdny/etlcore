@@ -1,5 +1,4 @@
 import pandas as pd
-from pandas import DataFrame
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
 
@@ -20,8 +19,6 @@ class DB():
 
     def change_db_connection(self, con_str: str):
         self.engine = create_engine(con_str, fast_executemany=True)
-        df = pd.read_sql("SELECT TOP 1 * FROM cx_meta", con=self.engine)
-        print(df)
         return True
 
     def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str) -> bool:
@@ -47,7 +44,7 @@ class DB():
         except Exception as e:
             print(f"stored procedure run {stored_procedure} failed! error string: {str(e)}")
 
-    def run_proc(self, stored_procedure: str, overload: int = 1) -> pd.DataFrame:
+    def run_proc_with_params(self, stored_procedure: str, overload: int = 1) -> pd.DataFrame:
         raise NotImplementedError
     
     def upsert(self):

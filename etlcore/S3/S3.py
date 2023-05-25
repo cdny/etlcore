@@ -17,7 +17,6 @@ class S3():
                 aws_secret_access_key=self.secret_key,
             )
         except Exception as e:
-
             print(f"Failed to create s3 client: {str(e)}")
 
     def list_files(self):

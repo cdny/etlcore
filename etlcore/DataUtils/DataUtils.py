@@ -1,7 +1,4 @@
 import pandas as pd
-from pandas import DataFrame
-from sqlalchemy.engine.base import Engine
-from multiprocessing import Pool
 
 class DataUtils():
     def __init__(self, engine, org):
@@ -13,7 +10,6 @@ class DataUtils():
             base_df = pd.read_sql(f"SELECT TOP 1 * FROM {db}.{schema}.{table_name}", con=self.engine.engine) # Retrieve an empty result set as template for table
             print(base_df)
             cleaned_df = raw_df.astype(base_df.dtypes.to_dict()) # https://stackoverflow.com/questions/48348176/convert-data-types-of-a-pandas-dataframe-to-match-another
-            print(cleaned_df)
             return cleaned_df #cleaned_df
         except Exception as e:
             print(f"unable to convert df {str(e)}")
