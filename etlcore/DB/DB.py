@@ -44,8 +44,13 @@ class DB():
         except Exception as e:
             print(f"stored procedure run {stored_procedure} failed! error string: {str(e)}")
 
-    def run_proc_with_params(self, stored_procedure: str, overload: int = 1) -> pd.DataFrame:
-        raise NotImplementedError
+    def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str) -> pd.DataFrame:
+        try:
+            with self.engine.connect() as con:
+                con.execute(f"EXECUTE {db}.{schema}.{stored_procedure} {param}")
+            return True
+        except Exception as e:
+            print(f"stored procedure run {stored_procedure} failed! error string: {str(e)}")
     
     def upsert(self):
         raise NotImplementedError
