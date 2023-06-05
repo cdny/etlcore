@@ -10,7 +10,7 @@ class DB():
 
     def _create_db_connection(self) -> Engine:
         try:
-            engine = create_engine(self.con_str, fast_executemany=True)
+            engine = create_engine(self.con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
             con = engine.connect()
             print("successfully connected to the database")
             return con
@@ -18,7 +18,7 @@ class DB():
             print(f"unable to connect to db {str(e)}")
 
     def change_db_connection(self, con_str: str):
-        self.engine = create_engine(con_str, fast_executemany=True)
+        self.engine = create_engine(con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
         return True
 
     def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str) -> bool:
@@ -39,7 +39,11 @@ class DB():
     def run_proc(self, db: str, schema: str, stored_procedure: str) -> bool:
         try:
             with self.engine.connect() as con:
-                con.execute(f"EXECUTE {db}.{schema}.{stored_procedure}")
+                result = con.execute(f"EXECUTE {db}.{schema}.{stored_procedure}").fetchall()
+                for q in result[0]:
+                    if q == 1:
+                        print(f"Query{list(result[0]).index(q) + 1} has failed")
+                        return False
             return True
         except Exception as e:
             print(f"stored procedure run {stored_procedure} failed! error string: {str(e)}")
@@ -47,7 +51,11 @@ class DB():
     def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str) -> pd.DataFrame:
         try:
             with self.engine.connect() as con:
-                con.execute(f"EXECUTE {db}.{schema}.{stored_procedure} {param}")
+                result = con.execute(f"EXECUTE {db}.{schema}.{stored_procedure} {param}").fetchall()
+                for q in result[0]:
+                    if q == 1:
+                        print(f"Query{list(result[0]).index(q) + 1} has failed")
+                        return False
             return True
         except Exception as e:
             print(f"stored procedure run {stored_procedure} failed! error string: {str(e)}")
