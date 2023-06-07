@@ -1,7 +1,6 @@
 import io
 import boto3
 import pandas as pd
-
 class S3():
     def __init__(self, access_key: str, secret_key: str, bucket_name: str):
         self.access_key = access_key
@@ -79,9 +78,7 @@ class S3():
             file_type = s3_key.split('.')[1]
             match file_type:
                 case "csv":
-                    df = pd.read_csv(
-                        data
-                    )  # here you can provide also some necessary args and kwargs
+                    df = pd.read_csv(data)  # here you can provide also some necessary args and kwargs
                     return df
                 case "xlsx":
                     df = pd.read_excel(data)
