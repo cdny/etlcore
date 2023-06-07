@@ -1,5 +1,4 @@
 import pandas as pd
-import pandas as pd
 from sqlalchemy.dialects.mssql import (
     BIGINT,
     DATETIME2,
