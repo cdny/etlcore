@@ -21,9 +21,10 @@ class DB():
         self.engine = create_engine(con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
         return True
 
-    def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str) -> bool:
+    def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str, dtype_dict: dict) -> bool:
         try:
-            df.to_sql(f"RAW_{table_name}", self.engine, schema, if_exists = "replace", index=False)
+            chunksize = 2100 // len(df.columns) #calculating chunksize
+            df.to_sql(name = f"RAW_{table_name}", dtype= dtype_dict, con = self.engine, schema = schema, if_exists = "replace", index=False, chunksize=chunksize)
             return True
         except Exception as e:
             print(f"insert failed {str(e)}")        
