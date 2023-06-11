@@ -17,18 +17,31 @@ from sqlalchemy.types import (
     String,
     SmallInteger
 )
+bool_type={
+    "Yes": True,
+    "No": False,
+    "YES": True,
+    "NO": False,
+    "1": True,
+    "0": False,
+    "TRUE": True,
+    "FALSE": False,
+    "True": True,
+    "False": False,
+    0: False,
+    1: True
+}
 
 class DataUtils():
     def __init__(self, engine, org):
         self.engine = engine
         self.org = org
 
-    def preprocess_df(self, db: str, schema: str, table_name: str, raw_df: pd.DataFrame) -> pd.DataFrame:
+    def preprocess_df(self, db: str, schema: str, table_name: str, raw_df: pd.DataFrame, dtype_dict: dict) -> pd.DataFrame:
         try:
             sql_df = pd.read_sql(f"SELECT TOP 1 * FROM {db}.{schema}.{table_name}", con=self.engine.engine) # Retrieve a 1 row result set as template for table
             raw_df = raw_df[sql_df.columns.to_list()] #drop columns from raw_df that are not in list of columns from sql_df
-            dtypes = self.get_table_dtypes(db, schema, table_name) #gets sqlalchemy dtypes and matches them to columns in raw df for use in next function
-            cleaned_df = self.convert_dtypes(raw_df, dtypes) #converts all columns in raw_df to sqlalchemy dtypes
+            cleaned_df = self.convert_dtypes(raw_df, dtype_dict) #converts all columns in raw_df to sqlalchemy dtypes
             return cleaned_df
         except Exception as e:
             print(f"unable to convert df {str(e)}")
@@ -37,7 +50,6 @@ class DataUtils():
         try:
             df = pd.read_sql(f"exec {db}.dbo.spGet_TableSchema {db_schema}, {table_name}", con=self.engine.engine)
             table_dtypes = {} #stores sqlalchemy dtypes with column names in dictionary
-
             for row in df.itertuples(index=False):
                 match row.DATA_TYPE: 
                     case "int":
@@ -49,9 +61,9 @@ class DataUtils():
                     case "date":
                         table_dtypes.update({row.COLUMN_NAME: Date()})
                     case "float":
-                        table_dtypes.update({row.COLUMN_NAME: Float()})
+                        table_dtypes.update({row.COLUMN_NAME: Float(int(row.NUMERIC_PRECISION))})
                     case "decimal":
-                        table_dtypes.update({row.COLUMN_NAME: DECIMAL()})
+                        table_dtypes.update({row.COLUMN_NAME: DECIMAL(precision=int(row.NUMERIC_PRECISION), scale=int(row.NUMERIC_SCALE))})
                     case "datetime":
                         table_dtypes.update({row.COLUMN_NAME: DateTime()})
                     case "datetime2":
@@ -59,11 +71,11 @@ class DataUtils():
                     case "smalldatetime":
                         table_dtypes.update({row.COLUMN_NAME: SMALLDATETIME()})
                     case "char":
-                        table_dtypes.update({row.COLUMN_NAME: CHAR()})
+                        table_dtypes.update({row.COLUMN_NAME: CHAR(row.CHARACTER_MAXIMUM_LENGTH)})
                     case "text":
                         table_dtypes.update({row.COLUMN_NAME: String()})
                     case "varchar":
-                        table_dtypes.update({row.COLUMN_NAME: String()})
+                        table_dtypes.update({row.COLUMN_NAME: String(row.CHARACTER_MAXIMUM_LENGTH)})
                     case "uniqueidentifier":
                         table_dtypes.update({row.COLUMN_NAME: UNIQUEIDENTIFIER()})
             del df
@@ -90,6 +102,10 @@ class DataUtils():
                     type(SMALLDATETIME()),
                 ]:
                     df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce")
+                elif type(dtypes[c]) in [type(Boolean())]:
+                    # Handle Yes/No/Null
+                    df.loc[:, c] = df.loc[:, c].map(bool_type, na_action="ignore")
+                    df.loc[:, c] = df.loc[:, c].astype("float64")
                 elif type(dtypes[c]) in [type(UNIQUEIDENTIFIER())]:
                     # NOOP
                     pass
