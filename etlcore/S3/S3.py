@@ -16,14 +16,14 @@ class S3():
                 aws_secret_access_key=self.secret_key,
             )
         except Exception as e:
-            print(f"Failed to create s3 client: {str(e)}")
+            return f"Failed to create s3 client: {str(e)}"
 
     def list_files(self):
         try:
             response = self.s3_client.list_objects_v2(Bucket=self.bucket_name) #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/list-objects-v2.html
             return response
         except Exception as e:
-            print(f"Failed to list out Contents of s3 bucket: {str(e)}")
+            return f"Failed to list out Contents of s3 bucket: {str(e)}"
 
     def upload_file(self, s3_key: str, local_file_path: str):
         try:
@@ -33,7 +33,7 @@ class S3():
             )
             return s3_key
         except Exception as e:
-            print(f"Failed to upload file: {str(e)}")
+            return f"Failed to upload file: {str(e)}"
 
     def download_file(self, s3_key: str, local_file_path: str):
         try:
@@ -43,7 +43,7 @@ class S3():
             )
             #TO DO: RETURN FILE PATH?
         except Exception as e:
-            print(f"Failed to download file: {str(e)}")
+           return f"Failed to download file: {str(e)}"
 
 
     def delete_file(self, s3_key: str) -> bool:
@@ -54,7 +54,7 @@ class S3():
             )
             return True
         except Exception as e:
-            print(f"Failed to delete file: {str(e)}")
+            return f"Failed to delete file: {str(e)}"
 
     def rename_file(self, s3_key: str, new_s3_key: str) -> bool:
         try:
@@ -66,7 +66,7 @@ class S3():
             )
             return True
         except Exception as e:
-            print(f"Failed to rename file: {str(e)}")
+            return f"Failed to rename file: {str(e)}"
 
     def get_file_content(self, s3_key: str) -> pd.DataFrame:
         try:
@@ -86,4 +86,4 @@ class S3():
                 case other:
                     raise NotImplementedError("File type provided is not yet implemented!")
         except Exception as e:
-            print(f"Failed to get file content: {str(e)}")
+            return f"Failed to get file content: {str(e)}"
