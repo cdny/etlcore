@@ -1,4 +1,5 @@
 import pandas as pd
+from sqlalchemy import text
 from sqlalchemy.dialects.mssql import (
     BIGINT,
     DATETIME2,
@@ -39,12 +40,12 @@ class DataUtils():
 
     def preprocess_df(self, db: str, schema: str, table_name: str, raw_df: pd.DataFrame, dtype_dict: dict) -> pd.DataFrame:
         try:
-            sql_df = pd.read_sql(f"SELECT TOP 1 * FROM {db}.{schema}.{table_name}", con=self.engine.engine) # Retrieve a 1 row result set as template for table
+            sql_df = pd.read_sql(text(f"SELECT TOP 1 * FROM {db}.{schema}.{table_name}"), con=self.engine.engine) # Retrieve a 1 row result set as template for table
             raw_df = raw_df[sql_df.columns.to_list()] #drop columns from raw_df that are not in list of columns from sql_df
             cleaned_df = self.convert_dtypes(raw_df, dtype_dict) #converts all columns in raw_df to sqlalchemy dtypes
             return cleaned_df
         except Exception as e:
-            print(f"unable to convert df {str(e)}")
+            return f"unable to convert df {str(e)}"
 
     def get_table_dtypes(self, db: str, db_schema: str, table_name: str) -> dict:
         try:
@@ -81,7 +82,7 @@ class DataUtils():
             del df
             return table_dtypes
         except Exception as e:
-            print(f"unable to get table column types {str(e)}")
+            return f"unable to get table column types {str(e)}"
     
     def convert_dtypes(self, df, dtypes):
         try:
@@ -118,7 +119,7 @@ class DataUtils():
                         ) 
             return df          
         except Exception as e:
-            print(f"unable to convert column types {str(e)}")
+            return f"unable to convert column types {str(e)}"
 
     def get_table_schema_from_db(self, db: str, schema: str, table_name: str) -> pd.DataFrame:
         raise NotImplementedError
@@ -145,4 +146,4 @@ class DataUtils():
                 base_copy[col]=base_copy[col].astype(sql_df[col].dtypes.name)
             return base_copy
         except Exception as e:
-            print(f"unable to convert df types: {str(e)}")
+            return f"unable to convert df types: {str(e)}"
