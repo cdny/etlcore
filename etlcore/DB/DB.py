@@ -32,19 +32,17 @@ class DB():
 
     def kill_fill(self, stage_db: str, dest_schema: str, table_name: str) -> bool:
         try:
-            with self.engine.connect() as con:
-                con.execute(text(f"EXECUTE dbo.spETL_KillFillDSQL @table = '{table_name}', @org = '{self.org}', @stage_db = '{stage_db}', @dest_schema='{dest_schema}'"))
+            self.engine.execute(text(f"EXECUTE dbo.spETL_KillFillDSQL @table = '{table_name}', @org = '{self.org}', @stage_db = '{stage_db}', @dest_schema='{dest_schema}'"))
             return True
         except Exception as e:
             return f"kill/fill of table failed: {str(e)}"
 
     def run_proc(self, db: str, schema: str, stored_procedure: str) -> bool:
         try:
-            with self.engine.connect() as con:
-                result = con.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure}")).fetchall()
-                for q in result[0]:
-                    if q == 1:
-                        return f"Query{list(result[0]).index(q) + 1} has failed"
+            result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure}")).fetchall()
+            for q in result[0]:
+                if q == 1:
+                    return f"Query{list(result[0]).index(q) + 1} has failed"
                         #return False
             return True
         except Exception as e:
@@ -52,12 +50,11 @@ class DB():
 
     def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str) -> pd.DataFrame:
         try:
-            with self.engine.connect() as con:
-                result = con.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure} {param}")).fetchall()
-                for q in result[0]:
-                    if q == 1:
-                        return f"Query{list(result[0]).index(q) + 1} has failed"
-                        #return False
+            result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure} {param}")).fetchall()
+            for q in result[0]:
+                if q == 1:
+                    return f"Query{list(result[0]).index(q) + 1} has failed"
+                    #return False
             return True
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
