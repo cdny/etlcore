@@ -49,7 +49,7 @@ class DataUtils():
 
     def get_table_dtypes(self, db: str, db_schema: str, table_name: str) -> dict:
         try:
-            df = pd.read_sql(f"exec {db}.dbo.spGet_TableSchema {db_schema}, {table_name}", con=self.engine.engine)
+            df = pd.read_sql(text(f"exec {db}.dbo.spGet_TableSchema {db_schema}, {table_name}"), con=self.engine.engine)
             table_dtypes = {} #stores sqlalchemy dtypes with column names in dictionary
             for row in df.itertuples(index=False):
                 match row.DATA_TYPE: 
@@ -72,11 +72,14 @@ class DataUtils():
                     case "smalldatetime":
                         table_dtypes.update({row.COLUMN_NAME: SMALLDATETIME()})
                     case "char":
-                        table_dtypes.update({row.COLUMN_NAME: CHAR(row.CHARACTER_MAXIMUM_LENGTH)})
+                        table_dtypes.update({row.COLUMN_NAME: CHAR(int(row.CHARACTER_MAXIMUM_LENGTH))})
                     case "text":
                         table_dtypes.update({row.COLUMN_NAME: String()})
                     case "varchar":
-                        table_dtypes.update({row.COLUMN_NAME: String(row.CHARACTER_MAXIMUM_LENGTH)})
+                        if row.CHARACTER_MAXIMUM_LENGTH == 'MAX':
+                            table_dtypes.update({row.COLUMN_NAME: String(None)})
+                        else:
+                            table_dtypes.update({row.COLUMN_NAME: String(int(row.CHARACTER_MAXIMUM_LENGTH))})
                     case "uniqueidentifier":
                         table_dtypes.update({row.COLUMN_NAME: UNIQUEIDENTIFIER()})
             del df
