@@ -24,7 +24,13 @@ class DB():
     def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str, dtype_dict: dict) -> bool:
         try:
             chunksize = 2100 // len(df.columns) #calculating chunksize
-            df.to_sql(name = f"RAW_{table_name}", dtype= dtype_dict, con = self.engine, schema = schema, if_exists = "replace", index=False, chunksize=chunksize)
+            df.to_sql(name = f"RAW_{table_name}", 
+                      dtype= dtype_dict, 
+                      con = self.engine, 
+                      schema = schema, 
+                      if_exists = "replace", 
+                      index=False, 
+                      chunksize=chunksize)
             return True
         except Exception as e:
             return f"insert failed {str(e)}"
