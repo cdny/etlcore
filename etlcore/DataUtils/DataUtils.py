@@ -72,11 +72,14 @@ class DataUtils():
                     case "smalldatetime":
                         table_dtypes.update({row.COLUMN_NAME: SMALLDATETIME()})
                     case "char":
-                        table_dtypes.update({row.COLUMN_NAME: CHAR(row.CHARACTER_MAXIMUM_LENGTH)})
+                        table_dtypes.update({row.COLUMN_NAME: CHAR(int(row.CHARACTER_MAXIMUM_LENGTH))})
                     case "text":
                         table_dtypes.update({row.COLUMN_NAME: String()})
                     case "varchar":
-                        table_dtypes.update({row.COLUMN_NAME: String(row.CHARACTER_MAXIMUM_LENGTH)})
+                        if row.CHARACTER_MAXIMUM_LENGTH == 'MAX':
+                            table_dtypes.update({row.COLUMN_NAME: String(None)})
+                        else:
+                            table_dtypes.update({row.COLUMN_NAME: String(int(row.CHARACTER_MAXIMUM_LENGTH))})
                     case "uniqueidentifier":
                         table_dtypes.update({row.COLUMN_NAME: UNIQUEIDENTIFIER()})
             del df
