@@ -109,7 +109,8 @@ class SFTP():
             return True
         except Exception as e:
             return f"Failed to upload directory contents: {str(e)}"
-        
+
+    #https://stackoverflow.com/questions/50118919/python-pysftp-get-r-from-linux-works-fine-on-linux-but-not-on-windows    
     def download_full_dir_contents(self, remote_dir_path: str, local_dir_path: str, preserve_mtime: bool = False) -> bool:
         try:
             for file in self.connection.listdir_attr(remote_dir_path): #iterate over files in starting directory
