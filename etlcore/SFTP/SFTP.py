@@ -1,6 +1,7 @@
 import io, os
 import pysftp
 from paramiko.hostkeys import HostKeys
+import pandas as pd
 
 class SFTP():
     def __init__(self, host: str, username: str, password: str, hostkeys: HostKeys = None, port: int = 22):
@@ -145,7 +146,6 @@ class SFTP():
         except Exception as e:
             return f"Failed to upload directory: {str(e)}"
 
-
     def delete_file(self, remote_file_path: str) -> bool:
         try:
             self.connection.remove(remote_file_path)
@@ -166,4 +166,20 @@ class SFTP():
             return True
         except Exception as e:
             return f"Failed to rename file: {str(e)}"
+        
+    def get_file_content(self, remote_file_path: str) -> pd.DataFrame:
+        try:
+            with self.connection.open(remote_file_path, "r") as file:
+                file_type = remote_file_path.split('.')[1]
+                match file_type:
+                    case "csv":
+                        df = pd.read_csv(file, encoding="utf-8")  # here you can provide also some necessary args and kwargs
+                        return df
+                    case "xlsx":
+                        df = pd.read_excel(file)
+                        return df
+                    case other:
+                        raise NotImplementedError("File type provided is not yet implemented!")
+        except Exception as e:
+            return f"Failed to get file content: {str(e)}"
 
