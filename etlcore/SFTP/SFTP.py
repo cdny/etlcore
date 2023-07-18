@@ -1,4 +1,4 @@
-import io, os
+import os
 import pysftp
 from paramiko.hostkeys import HostKeys
 import pandas as pd
