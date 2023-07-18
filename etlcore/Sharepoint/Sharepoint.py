@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 from office365.runtime.auth.client_credential import ClientCredential
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
