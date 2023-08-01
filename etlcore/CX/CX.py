@@ -9,7 +9,7 @@ class CX:
     def __init__(self, URL: str, Username: str, Password: str, *args, **kwargs) -> None:
         self.isLoggedIn = False
         self.exports = None
-        self.URL = URL[-1] # url ex from keyvault = https://cdnycx.nyiddccohh.net/ or https://phpcx.medisked.net/
+        self.URL = URL[:-1] # url ex from keyvault = https://cdnycx.nyiddccohh.net/ or https://phpcx.medisked.net/
         self.Username = Username
         self.Password = Password
 
@@ -34,8 +34,7 @@ class CX:
                     },
             )
         if response.ok:
-            # get the current time
-            self.logoutTime = time.time() + self._loginPeriod
+            self.logoutTime = time.time() + self._loginPeriod   # get the current time
             self.isLoggedIn = True
 
         return response.ok
@@ -47,3 +46,4 @@ class CX:
             # Refresh our session
             self.session.post("{}/Home/Touchback".format(self.URL))
             self.logoutTime = time.time() + self._loginPeriod
+            

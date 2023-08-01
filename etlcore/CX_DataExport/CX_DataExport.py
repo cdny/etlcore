@@ -22,9 +22,7 @@ class DataExport:
         self.requestedRun = 0
 
     def __repr__(self):
-        return "DataExportID: {} - DynamicViewName: {} - RunByName: {}".format(
-            self.DataExportID, self.DynamicViewName, self.RunByName
-        )
+        return "DataExportID: {} - DynamicViewName: {} - RunByName: {}".format(self.DataExportID, self.DynamicViewName, self.RunByName)
 
 class CX_Utils:
     
@@ -40,7 +38,7 @@ class CX_Utils:
         response = self.cx_object.session.post("{}/Reporting/DataExportList_Read".format(self.url), data={"pageSize": 200}) # get the list of files
 
         availableReports = json.loads(response.content.decode())["Data"] # parse the list of data exports
-        
+
         data_export_list = [] #create empty list
         for report in availableReports:
             data_export_list.append(DataExport(report))
@@ -48,7 +46,7 @@ class CX_Utils:
 
         self.cx_object.refreshSession() # Refresh our session
         return data_export_list
-    
+
     #Return the first item found by ID and its index in the list or None
     def findReportByID(self, exportID: int, includeIndex: bool = False) -> Tuple[DataExport, Union[int, None]]:
         for index, item in enumerate(self.report_list):
@@ -58,6 +56,13 @@ class CX_Utils:
                 else:
                     return item
         return None # If we haven't found anything
+
+    def update(self, export: DataExport):
+        ex, idx = self.findReportByID(export.DataExportID, True) #idx = 35?
+        if ex is None: #identify what ex and idx are
+            self.report_list.append(export)
+        else:
+            self.report_list[idx] = ex
     
     #runs export but does not download it, making it have fresh data to be pulled by downloadExport()
     def runExport(self, export: DataExport) -> None:
@@ -78,12 +83,12 @@ class CX_Utils:
                                 )
             if r.ok:
                 export.requestedRun = int(time.time())
-                #self.report_list.update(export)
+                self.update(export)
 
         self.cx_object.refreshSession()
 
     def downloadExport(self, export: Type[DataExport], savePath: str = None) -> Union[str, bytes]:
-        response = self.cx_object.session.get("{}/Reporting/DownloadExport?dataExportID={}&_".format(self.URL, export.DataExportID))
+        response = self.cx_object.session.get("{}/Reporting/DownloadExport?dataExportID={}&_".format(self.url, export.DataExportID))
         if response.ok:
             self.cx_object.refreshSession() # Refresh session
 
