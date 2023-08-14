@@ -36,19 +36,41 @@ class SFTP():
         except Exception as e:
             return f"failed to disconnect from host {self.host}"
 
-    def list_dir_contents(self, remote_path) -> set:
+    def list_dir_contents(self, remote_path: str) -> set:
         try:
             files = set([file for file in self.connection.listdir(remote_path)]) #set because it should not change
             return files
         except Exception as e:
             return f"Failed to list out files from directory: {str(e)}"
         
-    def list_dir_attributes(self, remote_path) -> set:
+    def list_dir_attributes(self, remote_path: str) -> set:
         try:
             files = set([file for file in self.connection.listdir_attr(remote_path)]) #set because it should not change
             return files
         except Exception as e:
             return f"Failed to list out files from directory: {str(e)}"
+        
+    def validate_file(self, remote_path: str) -> bool:
+        try:
+            if self.connection.exists(remote_path):
+                print("file is present")
+                num_lines = 0
+                
+                with self.connection.open(remote_path, mode = 'r') as target_file: #count the number of lines in the file to see if its empty
+                    for line in target_file:
+                        num_lines = num_lines + 1
+                if num_lines > 0:
+                    return True
+                else:
+                    print("file is present but empty")
+                    return False
+
+                #return self.connection.stat(remote_path) #returns an SFTPAttributes object if the file is present
+            else:
+                return FileNotFoundError()
+
+        except Exception as e:
+            return f"Unable to validate file at {remote_path}: {str(e)}"
 
     def upload_file(self, local_file_path: str, remote_path: str) -> bool:
         try:
