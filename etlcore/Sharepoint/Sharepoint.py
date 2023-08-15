@@ -56,8 +56,6 @@ class Sharepoint():
                 print("File name: {0}".format(myfile.properties["ServerRelativeUrl"]))
                 pathList = myfile.properties["ServerRelativeUrl"].split('/')
                 file_list +=[pathList[-1]]
-                #fileDest = outputDir + "/"+ pathList[-1]
-                #downloadFile(self.sp_ctx_connection, fileDest, myfile.properties["ServerRelativeUrl"])
             return file_list
         except Exception as e:
             print(f'Problem printing out list of folders {str(e)}')
