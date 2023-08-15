@@ -64,8 +64,6 @@ class SFTP():
                 else:
                     print("file is present but empty")
                     return False
-
-                #return self.connection.stat(remote_path) #returns an SFTPAttributes object if the file is present
             else:
                 return FileNotFoundError()
 
@@ -77,7 +75,6 @@ class SFTP():
             filename = local_file_path #need to strip local_file_path down to just the filename
             if "/" in filename:
                 filename = filename.rsplit('/',1)[1] #get just the filename if a full dir path is given
-            
             remote_path_full = os.path.join(remote_path, filename) #need to specify full path and filename on sftp server for put operation
             self.connection.put(local_file_path, remote_path_full)
             print(f"File uploaded successfully to '{self.host}' in location '{remote_path}'.")
@@ -126,7 +123,7 @@ class SFTP():
     def download_file(self, remote_path: str, local_file_path: str) -> bool:
         try:
             path, _ = os.path.split(local_file_path)
-            if not os.path.isdir(local_file_path) and path != '': #if path does not exist, create it. skip if its just the file
+            if not os.path.isdir(path) and path != '': #if path does not exist, create it. skip if its just the file
                 try:
                     os.makedirs(path)
                 except Exception as e:
