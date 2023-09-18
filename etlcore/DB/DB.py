@@ -53,6 +53,13 @@ class DB():
             return True
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
+        
+    def run_proc_with_results(self, db: str, schema: str, stored_procedure: str) -> bool:
+        try:
+            result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure}")).fetchall()
+            return result[0]
+        except Exception as e:
+            return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
 
     def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str) -> pd.DataFrame:
         try:
@@ -60,7 +67,6 @@ class DB():
             for q in result[0]:
                 if q == 1:
                     return f"Query{list(result[0]).index(q) + 1} has failed"
-                    #return False
             return True
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
