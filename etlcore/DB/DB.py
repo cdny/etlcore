@@ -36,6 +36,7 @@ class DB():
             return f"insert failed {str(e)}"
 
 
+    #dynamic kill/fill of table
     def kill_fill(self, stage_db: str, dest_schema: str, table_name: str) -> bool:
         try:
             self.engine.execute(text(f"EXECUTE dbo.spETL_KillFillDSQL @table = '{table_name}', @org = '{self.org}', @stage_db = '{stage_db}', @dest_schema='{dest_schema}'"))
@@ -43,7 +44,8 @@ class DB():
         except Exception as e:
             return f"kill/fill of table failed: {str(e)}"
 
-    def run_proc(self, db: str, schema: str, stored_procedure: str) -> bool:
+    #this should be used for ETL flows that use @q logging as a result
+    def run_proc(self, db: str, schema: str, stored_procedure: str) -> bool: 
         try:
             result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure}")).fetchall()
             for q in result[0]:
@@ -54,20 +56,19 @@ class DB():
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
         
-    def run_proc_with_results(self, db: str, schema: str, stored_procedure: str) -> bool:
+    #runs stored procedure and returns results
+    def run_proc_with_results(self, db: str, schema: str, stored_procedure: str):
         try:
             result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure}")).fetchall()
-            return result[0]
+            return result
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
 
-    def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str) -> pd.DataFrame:
+    #runs stored procedure with parameter and returns results
+    def run_proc_with_param(self, db: str, schema: str, stored_procedure: str, param: str):
         try:
-            result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure} {param}")).fetchall()
-            for q in result[0]:
-                if q == 1:
-                    return f"Query{list(result[0]).index(q) + 1} has failed"
-            return True
+            result = self.engine.execute(text(f"EXECUTE {db}.{schema}.{stored_procedure} '{param}'")).fetchall()
+            return result #
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
     
