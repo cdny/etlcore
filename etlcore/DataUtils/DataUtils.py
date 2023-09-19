@@ -124,20 +124,6 @@ class DataUtils():
         except Exception as e:
             return f"unable to convert column types {str(e)}"
 
-    def get_table_schema_from_db(self, db: str, schema: str, table_name: str) -> pd.DataFrame:
-        raise NotImplementedError
-        # Implement later when Nick Ts db mapping is complete
-        # should be able to pull out data types and column names using only a table name as a reference
-        # org is already available in the class object so no need to pass it in as a parameter
-
-    def handle_nullable_ints(self, df: pd.DataFrame) -> pd.DataFrame:
-        #todo: fix this it does not work currently
-        # for col in df.columns.to_list():
-        #     if df[col].dtype == 'int64':
-        #         df[col] = df[col].astype('Int64')
-        # return df.replace(r'^\s*$', np.nan, regex=True)
-        raise NotImplementedError
-
     #at this point all column values should be the same, this only handles converting types
     def convert_df_types(self, sql_df, base_df) -> pd.DataFrame:
         #todo: this kind of works, the problem is getting a base_df that you can trust as a reference
