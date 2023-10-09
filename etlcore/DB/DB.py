@@ -21,9 +21,9 @@ class DB():
         self.engine = create_engine(con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
         return True
 
-    def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str, dtype_dict: dict) -> bool:
+    def load_to_staging(self, df: pd.DataFrame, schema: str, table_name: str, dtype_dict: dict, chunksize: int = 1000) -> bool:
         try:
-            chunksize = 2100 // len(df.columns) #calculating chunksize
+            #chunksize = 2100 // len(df.columns) #calculating chunksize
             df.to_sql(name = f"RAW_{table_name}", 
                       dtype= dtype_dict, 
                       con = self.engine, 
