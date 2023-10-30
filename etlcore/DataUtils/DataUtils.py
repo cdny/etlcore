@@ -114,12 +114,7 @@ class DataUtils():
                     # NOOP
                     pass
                 elif type(dtypes[c] in [type(String())]):
-                    col_length = max(df.loc[:, c].astype(str).apply(len))
-                    if dtypes[c].length is None and col_length < 8000:
-                        dtypes[c] = String(col_length)
-                        print(
-                            "Updated column {} from String() to String({})".format(c, col_length)
-                        ) 
+                    df.loc[:, c] = df.loc[:, c].astype("str")
             return df          
         except Exception as e:
             return f"unable to convert column types {str(e)}"
