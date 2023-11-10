@@ -71,8 +71,8 @@ class Sharepoint():
             self.sp_ctx_connection.execute_query()
 
             for myfile in files:
-                list_item = myfile.listItemAllFields #get associated list item
                 if myfile.name in file_list:
+                    list_item = myfile.listItemAllFields #get associated list item
                     list_item.set_property(column_name, column_value) #update value of IsUploadedColumn
                     list_item.update()
                     self.sp_ctx_connection.execute_query()
