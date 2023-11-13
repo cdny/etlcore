@@ -58,4 +58,23 @@ class Sharepoint():
                 file_list +=[pathList[-1]]
             return file_list
         except Exception as e:
-            print(f'Problem printing out list of folders {str(e)}')
+            print(f'Problem printing out list of folders {str(e)}')   
+
+    def update_column_value(self, relative_url, file_list, column_name, column_value):
+        try:
+            libraryRoot = self.sp_ctx_connection.web.get_folder_by_server_relative_url(relative_url)
+            self.sp_ctx_connection.load(libraryRoot)
+            self.sp_ctx_connection.execute_query()
+            
+            files = libraryRoot.files
+            self.sp_ctx_connection.load(files)
+            self.sp_ctx_connection.execute_query()
+
+            for myfile in files:
+                if myfile.name in file_list:
+                    list_item = myfile.listItemAllFields #get associated list item
+                    list_item.set_property(column_name, column_value) #update value of IsUploadedColumn
+                    list_item.update()
+                    self.sp_ctx_connection.execute_query()
+        except Exception as e:
+            print(f'there was a problem updating {column_name} to be {column_value}: {str(e)}')      
