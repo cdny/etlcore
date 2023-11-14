@@ -1,30 +1,40 @@
 import os
 import pysftp
+import paramiko
+from io import StringIO
+from paramiko import Transport, SFTPClient, RSAKey, PKey
 from paramiko.hostkeys import HostKeys
 import pandas as pd
 
 class SFTP():
-    def __init__(self, host: str, username: str, password: str, hostkeys: HostKeys = None, port: int = 22):
+    def __init__(self, host: str, username: str, password: str, key: str = None, port: int = 22):
         self.host = host
         self.username = username
         self.password = password
-        self.hostkeys = hostkeys
+        self.key = key
         self.port = port
-        self.connection = self._create_sftp_client()
+        self.connection = self._create_sftp_client(key = key)
         print(f"Connected to {self.host} as {self.username}")
 
-    def _create_sftp_client(self):
+    def _create_sftp_client(self, key: str = None) -> SFTPClient:
         try:
-            cnopts = pysftp.CnOpts()
-            cnopts.hostkeys = self.hostkeys
-
-            return pysftp.Connection(
-                host = self.host,
-                username = self.username,
-                password = self.password,
-                cnopts=cnopts,
-                port = self.port
-            )
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            if key:
+                pem = StringIO(key) # Create RSA Private Key File in memory.
+                pkey=paramiko.RSAKey.from_private_key(pem, self.password) # returns PKey Object
+                ssh.connect(hostname=self.host, 
+                            username=self.username, 
+                            pkey=pkey, 
+                            passphrase=self.password, 
+                            allow_agent=False)
+            else: 
+                ssh.connect(hostname=self.host,
+                            username=self.username,
+                            password=self.password,
+                            allow_agent=False)
+            sftp = ssh.open_sftp()
+            return sftp
         except Exception as e:
             return f"Failed to create sftp client object: {str(e)}"
         
