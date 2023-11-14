@@ -1,9 +1,7 @@
 import os
-import pysftp
 import paramiko
 from io import StringIO
-from paramiko import Transport, SFTPClient, RSAKey, PKey
-from paramiko.hostkeys import HostKeys
+from paramiko import SFTPClient
 import pandas as pd
 
 class SFTP():
