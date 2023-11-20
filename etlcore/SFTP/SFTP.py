@@ -2,7 +2,6 @@ import os
 import paramiko
 from io import StringIO
 from paramiko import SFTPClient
-from paramiko.sftp_client import SFTPClient
 import pandas as pd
 
 class SFTP():
