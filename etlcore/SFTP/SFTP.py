@@ -11,15 +11,17 @@ class SFTP():
         self.password = password
         self.key = key
         self.port = port
-        self.connection = self._create_sftp_client(key = key)
+        self.connection = self._create_sftp_client()
+        if not isinstance(self.connection, SFTPClient):
+            raise ValueError(self.connection)
         print(f"Connected to {self.host} as {self.username}")
 
-    def _create_sftp_client(self, key: str = None) -> SFTPClient:
+    def _create_sftp_client(self) -> SFTPClient:
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            if key:
-                pem = StringIO(key) # Create RSA Private Key File in memory.
+            if self.key:
+                pem = StringIO(self.key.replace('\\n', '\n')) # Create RSA Private Key File in memory.
                 pkey=paramiko.RSAKey.from_private_key(pem, self.password) # returns PKey Object
                 ssh.connect(hostname=self.host, 
                             username=self.username, 
