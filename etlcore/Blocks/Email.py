@@ -6,9 +6,9 @@ import requests
 class Email(Block):
     """Send emails using the CDNY API."""
 
-    _block_type_name = "Email API"
-    _block_type_slug = "email-api"
-    _logo_url = "https://i.pravatar.cc/250"
+    _block_type_name:str = "Email API"
+    _block_type_slug:str = "email-api"
+    _logo_url:str = "https://i.pravatar.cc/250"
     # _description	Short description of block type. Defaults to docstring, if provided.
     # _code_example
 

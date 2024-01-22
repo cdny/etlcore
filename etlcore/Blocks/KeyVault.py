@@ -10,11 +10,13 @@ from pydantic import SecretStr
 
 class KeyVault(Block):
 
+
+
     """Connect to Azure Key Vault and get all the keys or one key."""
 
-    _block_type_name = "Azure Key Vault"
-    _block_type_slug = "azure-key-vault"
-    _logo_url = "https://images.ctfassets.net/gm98wzqotmnx/6AiQ6HRIft8TspZH7AfyZg/39fd82bdbb186db85560f688746c8cdd/azure.png?h=250"
+    _block_type_name:str = "Azure Key Vault"
+    _block_type_slug:str = "azure-key-vault"
+    _logo_url:str = "https://images.ctfassets.net/gm98wzqotmnx/6AiQ6HRIft8TspZH7AfyZg/39fd82bdbb186db85560f688746c8cdd/azure.png?h=250"
     # _description	Short description of block type. Defaults to docstring, if provided.
     # _code_example
 
