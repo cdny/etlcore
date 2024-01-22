@@ -21,10 +21,10 @@ class KeyVault(Block):
     # _description	Short description of block type. Defaults to docstring, if provided.
     # _code_example
 
-    azure_client_id: SecretStr
-    azure_client_secret: SecretStr
-    azure_tenant_id: SecretStr
-    vault_url: str
+    azure_client_id: SecretStr = None
+    azure_client_secret: SecretStr = None
+    azure_tenant_id: SecretStr = None
+    vault_url: str = ""
 
     def get_secrets(self) -> dict:
         os.environ["AZURE_CLIENT_ID"] = self.azure_client_id.get_secret_value()
