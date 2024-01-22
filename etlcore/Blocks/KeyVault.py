@@ -10,7 +10,8 @@ from pydantic import SecretStr
 
 class KeyVault(Block):
 
-
+    class Config:
+        arbitrary_types_allowed = True
 
     """Connect to Azure Key Vault and get all the keys or one key."""
 
