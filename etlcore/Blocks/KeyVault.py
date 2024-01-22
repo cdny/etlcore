@@ -5,7 +5,10 @@ from prefect.blocks.core import Block
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 
-from pydantic.v1 import SecretStr
+try:
+    from pydantic.v1 import SecretStr
+except:
+    from pydantic import SecretStr
 
 
 class KeyVault(Block):
