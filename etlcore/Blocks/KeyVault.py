@@ -10,21 +10,21 @@ from pydantic import SecretStr
 
 class KeyVault(Block):
 
-    class Config:
-        arbitrary_types_allowed = True
+    # class Config:
+    #     arbitrary_types_allowed = True
 
-    """Connect to Azure Key Vault and get all the keys or one key."""
+    # """Connect to Azure Key Vault and get all the keys or one key."""
 
-    _block_type_name:str = "Azure Key Vault"
-    _block_type_slug:str = "azure-key-vault"
-    _logo_url:str = "https://images.ctfassets.net/gm98wzqotmnx/6AiQ6HRIft8TspZH7AfyZg/39fd82bdbb186db85560f688746c8cdd/azure.png?h=250"
-    # _description	Short description of block type. Defaults to docstring, if provided.
-    # _code_example
+    # _block_type_name:str = "Azure Key Vault"
+    # _block_type_slug:str = "azure-key-vault"
+    # _logo_url:str = "https://images.ctfassets.net/gm98wzqotmnx/6AiQ6HRIft8TspZH7AfyZg/39fd82bdbb186db85560f688746c8cdd/azure.png?h=250"
+    # # _description	Short description of block type. Defaults to docstring, if provided.
+    # # _code_example
 
-    azure_client_id: SecretStr = None
-    azure_client_secret: SecretStr = None
-    azure_tenant_id: SecretStr = None
-    vault_url: str = ""
+    azure_client_id: SecretStr
+    azure_client_secret: SecretStr
+    azure_tenant_id: SecretStr
+    vault_url: str
 
     def get_secrets(self) -> dict:
         os.environ["AZURE_CLIENT_ID"] = self.azure_client_id.get_secret_value()
