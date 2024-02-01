@@ -105,7 +105,7 @@ class DataUtils():
                     type(DATETIME2()),
                     type(SMALLDATETIME()),
                 ]:
-                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], format='mixed')
+                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], format="mixed")
                 elif type(dtypes[c]) in [type(Boolean())]:
                     # Handle Yes/No/Null
                     df.loc[:, c] = df.loc[:, c].map(bool_type, na_action="ignore")
