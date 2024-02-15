@@ -98,7 +98,7 @@ class DataUtils():
                     type(BIGINT()),
                     type(SmallInteger())
                 ]:
-                    df.loc[:, c] = pd.to_numeric(df.loc[:, c])
+                    df.loc[:, c] = pd.to_numeric(df.loc[:, c], errors="coerce")
                 elif type(dtypes[c]) in [
                     type(Date()),
                     type(DateTime()),
