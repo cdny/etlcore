@@ -3,14 +3,17 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine.base import Engine
 
 class DB():
-    def __init__(self, con_str, org):
+    def __init__(self, con_str, org, auto_commit: bool = True):
         self.con_str = con_str
         self.org = org
-        self.engine = self._create_db_connection()
+        self.engine = self._create_db_connection(auto_commit)
 
-    def _create_db_connection(self) -> Engine:
+    def _create_db_connection(self, auto_commit: bool = True) -> Engine:
         try:
-            engine = create_engine(self.con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
+            if auto_commit:
+                engine = create_engine(self.con_str, fast_executemany=True, execution_options={"isolation_level": "AUTOCOMMIT"})
+            else:
+                engine = create_engine(self.con_str, fast_executemany=True)
             con = engine.connect()
             print("successfully connected to the database")
             return con
@@ -35,7 +38,6 @@ class DB():
         except Exception as e:
             return f"insert failed {str(e)}"
 
-
     #dynamic kill/fill of table
     def kill_fill(self, stage_db: str, dest_schema: str, table_name: str) -> bool:
         try:
@@ -55,7 +57,6 @@ class DB():
             return True
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
-        
     #runs stored procedure and returns results
     def run_proc_with_results(self, db: str, schema: str, stored_procedure: str):
         try:
@@ -71,6 +72,5 @@ class DB():
             return result #
         except Exception as e:
             return f"stored procedure run {stored_procedure} failed! error string: {str(e)}"
-    
     def upsert(self):
         raise NotImplementedError
