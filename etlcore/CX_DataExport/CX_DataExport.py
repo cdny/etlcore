@@ -104,3 +104,7 @@ class CX_Utils:
 
         else:
             raise Exception("An error occured and the file was unable to be downloaded - Status Code: {}".format(response.status_code))
+        
+    def get_report(cx_util, Report: DataExport):
+        return read_csv(StringIO(cx_util.downloadExport(Report).decode()), dtype=object)
+      
