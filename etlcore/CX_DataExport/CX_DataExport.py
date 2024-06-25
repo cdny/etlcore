@@ -2,7 +2,10 @@ import os, time, bz2, re, json
 from typing import Tuple, Type, Union
 
 from etlcore.CX.CX import CX
+from etlcore.CX_DataExport.CX_DataExport import CX_Utils
 from bs4 import BeautifulSoup
+from pandas import read_csv
+from io import StringIO
 
 
 class DataExport:
@@ -104,3 +107,6 @@ class CX_Utils:
 
         else:
             raise Exception("An error occured and the file was unable to be downloaded - Status Code: {}".format(response.status_code))
+        
+    def get_report(cx_util: CX_Utils, Report: DataExport):
+        return read_csv(StringIO(cx_util.downloadExport(Report).decode()), dtype=object)    
