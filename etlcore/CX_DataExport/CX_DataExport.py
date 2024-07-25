@@ -3,6 +3,8 @@ from typing import Tuple, Type, Union
 
 from etlcore.CX.CX import CX
 from bs4 import BeautifulSoup
+from pandas import read_csv
+from io import StringIO
 
 
 class DataExport:
