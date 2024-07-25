@@ -29,6 +29,8 @@ bool_type={
     "FALSE": False,
     "True": True,
     "False": False,
+    "true": True,
+    "false": False,
     0: False,
     1: True
 }
