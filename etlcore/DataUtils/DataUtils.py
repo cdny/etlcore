@@ -89,44 +89,67 @@ class DataUtils():
             return table_dtypes
         except Exception as e:
             return f"unable to get table column types {str(e)}"
-    
+
     def convert_dtypes(self, df, dtypes):
         try:
             for c in dtypes:
-                if type(dtypes[c]) in [
-                    type(Integer()),
-                    type(Float()),
-                    type(BigInteger()),
-                    type(DECIMAL()),
-                    type(BIGINT()),
-                    type(SmallInteger())
-                ]:
+                dtype = dtypes[c]
+                if isinstance(dtype, (Integer, Float, BigInteger, DECIMAL, BIGINT, SmallInteger)):
                     df.loc[:, c] = pd.to_numeric(df.loc[:, c], errors="coerce")
-                elif type(dtypes[c]) in [
-                    type(Date()),
-                    type(DateTime()),
-                    type(DATETIME()),
-                    type(DATETIME2()),
-                    type(SMALLDATETIME()),
-                ]:
+                elif isinstance(dtype, (Date, DateTime, DATETIME, DATETIME2, SMALLDATETIME)):
                     df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce")
-                elif type(dtypes[c]) in [type(Boolean())]:
-                    # Handle Yes/No/Null
+                elif isinstance(dtype, Boolean):
                     df.loc[:, c] = df.loc[:, c].map(bool_type, na_action="ignore")
                     df.loc[:, c] = df.loc[:, c].astype("float64")
-                elif type(dtypes[c]) in [type(UNIQUEIDENTIFIER())]:
+                elif isinstance(dtype, UNIQUEIDENTIFIER):
                     # NOOP
                     pass
-                elif type(dtypes[c] in [type(String())]):
+                elif isinstance(dtype, String):
                     col_length = max(df.loc[:, c].astype(str).apply(len))
-                    if dtypes[c].length is None and col_length < 8000:
+                    if dtype.length is None and col_length < 8000:
                         dtypes[c] = String(col_length)
-                        print(
-                            "Updated column {} from String() to String({})".format(c, col_length)
-                        ) 
-            return df          
+                        print(f"Updated column {c} from String() to String({col_length})")
+            return df
         except Exception as e:
             return f"unable to convert column types {str(e)}"
+
+    # def convert_dtypes(self, df, dtypes):
+    #     try:
+    #         for c in dtypes:
+    #             if type(dtypes[c]) in [
+    #                 type(Integer()),
+    #                 type(Float()),
+    #                 type(BigInteger()),
+    #                 type(DECIMAL()),
+    #                 type(BIGINT()),
+    #                 type(SmallInteger())
+    #             ]:
+    #                 df.loc[:, c] = pd.to_numeric(df.loc[:, c], errors="coerce")
+    #             elif type(dtypes[c]) in [
+    #                 type(Date()),
+    #                 type(DateTime()),
+    #                 type(DATETIME()),
+    #                 type(DATETIME2()),
+    #                 type(SMALLDATETIME()),
+    #             ]:
+    #                 df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce")
+    #             elif type(dtypes[c]) in [type(Boolean())]:
+    #                 # Handle Yes/No/Null
+    #                 df.loc[:, c] = df.loc[:, c].map(bool_type, na_action="ignore")
+    #                 df.loc[:, c] = df.loc[:, c].astype("float64")
+    #             elif type(dtypes[c]) in [type(UNIQUEIDENTIFIER())]:
+    #                 # NOOP
+    #                 pass
+    #             elif type(dtypes[c] in [type(String())]):
+    #                 col_length = max(df.loc[:, c].astype(str).apply(len))
+    #                 if dtypes[c].length is None and col_length < 8000:
+    #                     dtypes[c] = String(col_length)
+    #                     print(
+    #                         "Updated column {} from String() to String({})".format(c, col_length)
+    #                     ) 
+    #         return df          
+    #     except Exception as e:
+    #         return f"unable to convert column types {str(e)}"
 
     #at this point all column values should be the same, this only handles converting types
     def convert_df_types(self, sql_df, base_df) -> pd.DataFrame:
