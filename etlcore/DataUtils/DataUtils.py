@@ -68,7 +68,7 @@ class DataUtils():
                     case "decimal":
                         table_dtypes.update({row.COLUMN_NAME: DECIMAL(precision=int(row.NUMERIC_PRECISION), scale=int(row.NUMERIC_SCALE))})
                     case "datetime":
-                        table_dtypes.update({row.COLUMN_NAME: DateTime()})
+                        table_dtypes.update({row.COLUMN_NAME: DATETIME2()}) #to fix sftp flows
                     case "datetime2":
                         table_dtypes.update({row.COLUMN_NAME: DATETIME2()})
                     case "smalldatetime":
