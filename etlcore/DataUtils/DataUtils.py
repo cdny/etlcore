@@ -5,6 +5,7 @@ from sqlalchemy.dialects.mssql import (
     DATETIME2,
     SMALLDATETIME,
     UNIQUEIDENTIFIER,
+    DATETIME
 )
 from sqlalchemy.types import (
     CHAR,
@@ -68,7 +69,7 @@ class DataUtils():
                     case "decimal":
                         table_dtypes.update({row.COLUMN_NAME: DECIMAL(precision=int(row.NUMERIC_PRECISION), scale=int(row.NUMERIC_SCALE))})
                     case "datetime":
-                        table_dtypes.update({row.COLUMN_NAME: DATETIME2()}) #to fix sftp flows
+                        table_dtypes.update({row.COLUMN_NAME: DATETIME()}) #to fix sftp flows
                     case "datetime2":
                         table_dtypes.update({row.COLUMN_NAME: DATETIME2()})
                     case "smalldatetime":
@@ -104,6 +105,7 @@ class DataUtils():
                 elif type(dtypes[c]) in [
                     type(Date()),
                     type(DateTime()),
+                    type(DATETIME()),
                     type(DATETIME2()),
                     type(SMALLDATETIME()),
                 ]:
