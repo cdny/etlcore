@@ -96,8 +96,14 @@ class DataUtils():
                 dtype = dtypes[c]
                 if isinstance(dtype, (Integer, Float, BigInteger, DECIMAL, BIGINT, SmallInteger)):
                     df.loc[:, c] = pd.to_numeric(df.loc[:, c], errors="coerce")
-                elif isinstance(dtype, (Date, DateTime, DATETIME, DATETIME2, SMALLDATETIME)):
+                elif isinstance(dtype, Date):
+                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce", format='%Y-%m-%d')
+                elif isinstance(dtype, DATETIME):
                     df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce", format='%Y-%m-%d %H:%M:%S')
+                elif isinstance(dtype, DATETIME2):
+                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce", format='%Y-%m-%d %H:%M:%S.%f')
+                elif isinstance(dtype, SMALLDATETIME):
+                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce", format='%Y-%m-%d %H:%M')
                 elif isinstance(dtype, Boolean):
                     df.loc[:, c] = df.loc[:, c].map(bool_type, na_action="ignore")
                     df.loc[:, c] = df.loc[:, c].astype("float64")
