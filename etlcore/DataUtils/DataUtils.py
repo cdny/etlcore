@@ -5,7 +5,8 @@ from sqlalchemy.dialects.mssql import (
     DATETIME2,
     SMALLDATETIME,
     UNIQUEIDENTIFIER,
-    DATETIME
+    DATETIME,
+    DATE
 )
 from sqlalchemy.types import (
     CHAR,
@@ -63,7 +64,7 @@ class DataUtils():
                     case "bigint":
                         table_dtypes.update({row.COLUMN_NAME: BIGINT()})
                     case "date":
-                        table_dtypes.update({row.COLUMN_NAME: Date()})
+                        table_dtypes.update({row.COLUMN_NAME: DATE()})
                     case "float":
                         table_dtypes.update({row.COLUMN_NAME: Float(int(row.NUMERIC_PRECISION))})
                     case "decimal":
@@ -133,12 +134,13 @@ class DataUtils():
                     df.loc[:, c] = pd.to_numeric(df.loc[:, c], errors="coerce")
                 elif type(dtypes[c]) in [
                     type(Date()),
+                    type(DATE()),
                     type(DateTime()),
                     type(DATETIME()),
                     type(DATETIME2()),
                     type(SMALLDATETIME()),
                 ]:
-                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce").dt.strftime('%Y-%m-%d')
+                    df.loc[:, c] = pd.to_datetime(df.loc[:, c], errors="coerce")
                     #print(pd.to_datetime(df.date).dt.strftime('%Y-%m-%d'))
                 elif type(dtypes[c]) in [type(Boolean())]:
                     # Handle Yes/No/Null
