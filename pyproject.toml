@@ -22,7 +22,7 @@ dependencies = [
 "lxml==4.9.1",
 "boto3==1.26.136",
 "pandas==2.0.1",
-"prefect==2.14.16",
+"prefect==2.16.5",
 "pyodbc==4.0.39",
 "paramiko==3.3.1",
 "Office365-REST-Python-Client",
