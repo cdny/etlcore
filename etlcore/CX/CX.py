@@ -39,6 +39,15 @@ class CX:
 
         return response.ok
     
+    #This method ends session with Medisked and initializes a countdown timer
+    def logout(self):
+        response = self.session.get("{}/Account/Logout".format(self.URL))
+        print(response.status_code)
+
+        if response.status_code == 302:
+            self.isLoggedIn = False
+        return response.status_code
+    
     def refreshSession(self) -> None:
         if time.time() - self.logoutTime > CX._loginPeriod:
             self.login()
