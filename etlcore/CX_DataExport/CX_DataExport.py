@@ -99,9 +99,11 @@ class CX_Utils:
             with open(fileName, "wb") as f:
                 content = bz2.compress(response.content)
                 f.write(content)
+            self.cx_object.logout()
             return fileName
 
         elif response.ok: # return the content for use in a dataframe
+            self.cx_object.logout()
             return response.content
 
         else:
