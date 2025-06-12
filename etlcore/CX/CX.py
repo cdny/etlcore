@@ -43,7 +43,8 @@ class CX:
             else:
                 counter += 1
         
-        if not (response.ok):
+        #if not (response.ok):
+        if 1==1:
             raise ValueError(f"Failed to login to MediSked.")
 
         return response.ok
