@@ -27,7 +27,8 @@ class CX:
         bs = BeautifulSoup(response.content, "lxml") # find the RVT (Request Verification Token)
         rvt = bs.find(attrs={"name": "__RequestVerificationToken"}).attrs["value"]
         while (not isOkay and counter < 2):
-        # authenticate
+            # authenticate
+            print (f'counter: {counter}')
             response = self.session.post("{}/Account/Login".format(self.URL),
                     data={"__RequestVerificationToken": rvt,
                         "Username": self.Username,
