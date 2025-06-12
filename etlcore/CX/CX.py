@@ -20,15 +20,14 @@ class CX:
 
     #This method creates session with Medisked and initializes a countdown timer
     def login(self):
-        #test comment
-        isOkay, counter = False, 0
+        isOkay, counter = False, 1
         response = self.session.get("{}/Account/Login".format(self.URL))
-        print (f'initial get request response: {response.status_code}')
+        print (f'Initial get request response: {response.status_code}')
         bs = BeautifulSoup(response.content, "lxml") # find the RVT (Request Verification Token)
         rvt = bs.find(attrs={"name": "__RequestVerificationToken"}).attrs["value"]
-        while (not isOkay and counter < 2):
+        while (not isOkay and counter < 3):
             # authenticate
-            print (f'counter: {counter}')
+            print (f'Attempt #{counter} connecting to MediSked')
             response = self.session.post("{}/Account/Login".format(self.URL),
                     data={"__RequestVerificationToken": rvt,
                         "Username": self.Username,
@@ -43,6 +42,9 @@ class CX:
                 isOkay = True
             else:
                 counter += 1
+        
+        if not (response.ok):
+            raise ValueError(f"Failed to login to MediSked.")
 
         return response.ok
     
