@@ -44,7 +44,7 @@ class CX:
                 counter += 1
         
         if not (response.ok):
-            raise ValueError(f"Failed to login to MediSked.")
+            raise ValueError(f"Failed MediSked login. Response Status: {response.status_code}. Message: {response.text}")
 
         return response.ok
     
