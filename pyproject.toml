@@ -24,7 +24,7 @@ dependencies = [
 "pandas==2.0.1",
 "prefect==2.14.16",
 "pyodbc==4.0.39",
-"paramiko==3.3.1",
+"paramiko==3.4.0",
 "Office365-REST-Python-Client",
 "office365",
 "anyio==3.7.1",
